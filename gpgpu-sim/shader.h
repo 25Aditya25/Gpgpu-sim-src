@@ -1394,6 +1394,15 @@ struct shader_core_stats_pod {
     unsigned *num_warps_issuable;
     unsigned gpgpu_n_stall_shd_mem;
 
+    /*
+    Added by Aditya
+    */
+    unsigned *m_num_repEx;
+
+     /*
+    End of Added by Aditya
+    */   
+
     //memory access classification
     int gpgpu_n_mem_read_local;
     int gpgpu_n_mem_write_local;
@@ -1417,14 +1426,14 @@ struct shader_core_stats_pod {
 
 /*
     Edited b Aditya
-*/
+
     
     class Redundant_instruction{
     public: 
 
     }
 
-/*
+
     End of Edited b Aditya
 */
 
