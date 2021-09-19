@@ -391,6 +391,7 @@ void shader_core_stats::print( FILE* fout ) const
     Start of Printed by Aditya
     */
 
+/*
    fprintf(fout, "Printed by Aditya\n");
    for(int i=0;i<15;i++){ //here the number of SMs is 15 
         num_alu_inst+=m_num_ialu_acesses[i];
@@ -405,7 +406,7 @@ void shader_core_stats::print( FILE* fout ) const
    fprintf(fout, "Total cycles for which SP is used for executing instructions(writeback only) in all SMs = %d\n", num_sp_inst);
    fprintf(fout, "Total cycles for which SFU is used for executing instructions(writeback only) in all SMs = %d\n", num_sfu_inst);
     
-
+*/
    
    /*
     End of Printed by Aditya
@@ -666,6 +667,10 @@ void shader_core_ctx::fetch()
             // this code fetches instructions from the i-cache or generates memory requests
             if( !m_warp[warp_id].functional_done() && !m_warp[warp_id].imiss_pending() && m_warp[warp_id].ibuffer_empty() ) {
                 address_type pc  = m_warp[warp_id].get_pc();
+
+                //Printed by aditya
+                //std::cout<<"Pc Printed by aditya"<<pc<<std::endl;
+                //end of print by aditya
                 address_type ppc = pc + PROGRAM_MEM_START;
                 unsigned nbytes=16; 
                 unsigned offset_in_block = pc & (m_config->m_L1I_config.get_line_sz()-1);
@@ -1542,7 +1547,7 @@ sp_unit::sp_unit( register_set* result_port, const shader_core_config *config,sh
 void sp_unit :: issue(register_set& source_reg)
 {
     warp_inst_t** ready_reg = source_reg.get_ready();
-	//m_core->incexecstat((*ready_reg));
+	//m_core->inincsp_statcexecstat((*ready_reg));
 	(*ready_reg)->op_pipe=SP__OP;
 	m_core->incsp_stat(m_core->get_config()->warp_size,(*ready_reg)->latency);
 	pipelined_simd_unit::issue(source_reg);

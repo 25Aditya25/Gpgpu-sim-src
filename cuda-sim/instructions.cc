@@ -43,6 +43,10 @@
 
 #include <stdarg.h>
 
+//Added by aditya
+#include<iostream>
+//using namespace std;
+//end of added by adityya
 unsigned ptx_instruction::g_num_ptx_inst_uid=0;
 
 const char *g_opcode_string[NUM_OPCODES] = {
@@ -757,9 +761,45 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
    const operand_info &src2 = pI->src2();
 
+   
    unsigned i_type = pI->get_type();
    src1_data = thread->get_operand_value(src1, dst, i_type, thread, 1);
    src2_data = thread->get_operand_value(src2, dst, i_type, thread, 1);
+   
+   //Added by aditya
+   
+   switch(i_type){
+      case S8_TYPE:printf("\n #Aditya# S8_TYPE: %d",src1_data.s8);
+      case S16_TYPE:printf("\n #Aditya# S16_TYPE: %d",src1_data.s16);
+      case S32_TYPE:printf("\n #Aditya# S32_TYPE: %d",src1_data.s32);
+      case S64_TYPE:printf("\n #Aditya# S64_TYPE: %ld",src1_data.s64);
+      case U8_TYPE:printf("\n #Aditya# U8_TYPE: %u",src1_data.u8);
+      case U16_TYPE:printf("\n #Aditya# U16_TYPE: %u",src1_data.u16);
+      case U32_TYPE:printf("\n #Aditya# U32_TYPE: %u",src1_data.u32);
+      case U64_TYPE:printf("\n #Aditya# U64_TYPE: %lu",src1_data.u64);
+      case F16_TYPE:printf("\n #Aditya# F16_TYPE: %f",src1_data.f16);
+      case F32_TYPE:printf("\n #Aditya# F32_TYPE: %f",src1_data.f32);
+      case F64_TYPE:printf("\n #Aditya# F64_TYPE: %lf",src1_data.f64);
+      case FF64_TYPE:printf("\n #Aditya# FF64_TYPE: %lf",src1_data.f64);
+      case B8_TYPE:printf("\n #Aditya# B8_TYPE: %d",src1_data.s8);
+      case B16_TYPE:printf("\n #Aditya# B16_TYPE: %u",src1_data.u16);
+      case B32_TYPE:printf("\n #Aditya# B32_TYPE: %u",src1_data.u32);
+      case B64_TYPE:printf("\n #Aditya# B64_TYPE: %lu",src1_data.u64);
+     
+      default: printf("\n #Aditya# 32bitsigned %d",src1_data.s32);
+
+   }
+
+   
+  
+  
+   
+   
+   
+
+   //std::cout<<"hello="<<std::endl;
+  
+   //End of Added by aditya
 
    unsigned rounding_mode = pI->rounding_mode();
    int orig_rm = fegetround();
@@ -812,6 +852,11 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    fesetround( orig_rm );
 
    thread->set_operand_value(dst, data, i_type, thread, pI, overflow, carry  );
+
+
+   /*Edited By Aditya*/
+   //printf("This line got printed from add_impl by Aditya");
+   /*End of Edited by Aditya*/
 }
 
 void addc_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
@@ -1386,6 +1431,9 @@ void call_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    const symbol *func_addr = target.get_symbol();
    const function_info *target_func = func_addr->get_pc();
 
+//added by aditya
+   //std::cout<<"Aditya PC="<<func_addr->get_pc() <<std::endl;
+ //end of added by aditya  
    // check that number of args and return match function requirements
    if( pI->has_return() ^ target_func->has_return() ) {
       printf("GPGPU-Sim PTX: Execution error - mismatch in number of return values between\n"

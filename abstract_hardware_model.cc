@@ -791,8 +791,22 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             if(warpId==(unsigned (-1)))
                 warpId = inst.warp_id();
             unsigned tid=m_warp_size*warpId+t;
-            m_thread[tid]->ptx_exec_inst(inst,t);
+
+            /*
+            Added by Aditya
+            m_thread[] is an array of threads in a warp.
+            lets print the warp_id when tid is 0    
+            */
+            //if(t==0) printf("\nAditya m_warp_id=%u",warpId);
             
+            /*
+            End of Added by Aditya
+            */
+
+            m_thread[tid]->ptx_exec_inst(inst,t);  //m_thread is of type ptx_thread_info
+            printf("\nAditya Warp ID =%u Thread id=%u ",warpId,t);
+
+
             //virtual function
             checkExecutionStatusAndUpdate(inst,t,tid);
         }

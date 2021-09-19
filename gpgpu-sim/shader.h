@@ -530,7 +530,7 @@ public:
       /*
         Start of Printed by Aditya
       */
-        fprintf(fp,"Operand Collector State:\n");
+        //fprintf(fp,"Operand Collector State:\n");
 
       /*
         End of Printed by Aditya
@@ -727,9 +727,12 @@ private:
       void add_read_requests( collector_unit_t *cu ) 
       {
          const op_t *src = cu->get_operands();
+         //printf("\nwarpid=%u",cu->get_warp_id());//Added by aditya
          for( unsigned i=0; i<MAX_REG_OPERANDS*2; i++) {
             const op_t &op = src[i];
+            //printf("\nsrd[%u]=%u\n",i,&op);//Added by aditya
             if( op.valid() ) {
+
                unsigned bank = op.get_bank();
                m_queue[bank].push_back(op);
             }
