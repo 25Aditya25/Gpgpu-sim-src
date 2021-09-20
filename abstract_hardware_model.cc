@@ -36,6 +36,9 @@
 #include "option_parser.h"
 #include <algorithm>
 
+/*Added by Aditya*/
+#include "cuda-sim/profile.h"
+/*End of Added by Aditya*/
 unsigned mem_access_t::sm_next_access_uid = 0;   
 unsigned warp_inst_t::sm_next_uid = 0;
 
@@ -784,8 +787,12 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
     }
 }
 
+
 void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
-{
+{   
+    /*Added by Aditya*/
+    //opc_opr_warp a;
+    /*End of Added by Aditya*/
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
@@ -801,6 +808,27 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             
             /*
             End of Added by Aditya
+            */
+
+
+            /*
+            need a data structure called opc_opr that can store the opcode and the 3x src operands+1 dst operands.
+            operands are of type ptx_reg_t, operand is of type int. This is declared in abstract_hardware_model.h
+
+            another data structure that has a queue of opc_opr
+                
+
+            Need to read operands and opcode here
+                
+            call some function that gets the operands
+            To get operands we need to do the following
+            1. get pc from inst
+            2. get instruction
+            3. get operands
+            
+            check if the operands and opcode are already present in a queue of 512 elements
+            if they are present then increment the count of repetetaions and deque the last element from the queue,
+            enque the read operands and opcode.
             */
 
             m_thread[tid]->ptx_exec_inst(inst,t);  //m_thread is of type ptx_thread_info

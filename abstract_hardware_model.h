@@ -166,6 +166,35 @@ struct dim3 {
 
 void increment_x_then_y_then_z( dim3 &i, const dim3 &bound);
 
+
+/*Added by Aditya*/
+//int aditya=100;
+
+/*
+class opc_opr{
+public:
+    opc_opr(){
+        opcode=0;
+    }
+
+    opc_opr(ptx_reg_t s1,ptx_reg_t s2,ptx_reg_t s3,ptx_reg_t d,int op){
+        src1=s1;
+        src2=s2;
+        src3=s3;
+        dest=d;
+        opcode=op;
+    }
+
+    //bool isequal(opc_opr o);
+
+ private:    
+    ptx_reg_t src1,src2,src3,dest;
+    int opcode;   
+};
+*/
+
+
+/*End of Added by Aditya*/
 class kernel_info_t {
 public:
 //   kernel_info_t()

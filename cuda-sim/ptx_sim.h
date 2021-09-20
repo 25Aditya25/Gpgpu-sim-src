@@ -118,6 +118,13 @@ union ptx_reg_t {
          return(bits.ms >> (bit-32)) & 1;
    }
 
+   /*Added by Aditya*/
+   bool isEqual(ptx_reg_t o){
+      return (o.u128.lowest==u128.lowest && o.u128.highest==u128.highest && o.u128.low==u128.low && o.u128.high==u128.high);
+   }
+   /*End of Added by Aditya*/
+
+
    signed char       s8;
    signed short      s16;
    signed int        s32;
