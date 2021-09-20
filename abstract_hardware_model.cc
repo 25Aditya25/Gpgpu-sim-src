@@ -791,8 +791,10 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
 void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 {   
     /*Added by Aditya*/
-    //opc_opr_warp a;
+    addr_t pc=inst.pc; //get pc from timing model
+    //printf("Aditya PC Value is: %u\n",pc);
     /*End of Added by Aditya*/
+    
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
@@ -830,6 +832,8 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             if they are present then increment the count of repetetaions and deque the last element from the queue,
             enque the read operands and opcode.
             */
+
+
 
             m_thread[tid]->ptx_exec_inst(inst,t);  //m_thread is of type ptx_thread_info
             printf("\nAditya Warp ID =%u Thread id=%u ",warpId,t);
