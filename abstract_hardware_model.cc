@@ -802,9 +802,17 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
     const operand_info &src3;*/
     unsigned i_type; 
     ptx_reg_t src1_data, src2_data, src3_data;
-    //printf("Aditya PC Value is: %u\n",pc);
-    /*End of Added by Aditya*/
+    int areAllactive=1;  //put the operands into queue only when this is set.
+    opc_opr_warp oow;    //for storing operands and opcode for each thread of a warp
+    ptx_reg_t zero;     //for storing zero operands
 
+
+    //printf("Aditya PC Value is: %u\n",pc);
+    
+    for ( unsigned t=0; t < m_warp_size; t++ ) {
+        if( !inst.active(t) ) areAllactive=0;
+    }
+    /*End of Added by Aditya*/
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
@@ -853,13 +861,41 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             } 
             //Reading operands
             //printf("\n #Aditya# num_op: %u",num_op);
+            if(areAllactive){    
+                if(pI->m_operands_status() && num_op==2){
+                    const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
+                    const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
+                    i_type = pI->get_type();
+                    //printf("hello\n");
+                    src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
+                    oow.arr[t].addValues(src1_data,zero,zero,op);
+                }
+                else if(pI->m_operands_status() && num_op==3){
+                    const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
+                    const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
+                    const operand_info &src2 = pI->src2();
 
-            if(pI->m_operands_status() && num_op==2){
-                const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
-                const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
-                i_type = pI->get_type();
-                //printf("hello\n");
-                src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
+                    i_type = pI->get_type();
+                    //printf("hello\n");
+                    src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
+                    src2_data = m_thread[tid]->get_operand_value(src2, dst, i_type, m_thread[tid], 1);
+                    oow.arr[t].addValues(src1_data,src2_data,zero,op);
+                }
+                else if(pI->m_operands_status() && num_op==4){
+                    const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
+                    const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
+                    const operand_info &src2 = pI->src2();
+                    const operand_info &src3 = pI->src3();
+
+                    i_type = pI->get_type();
+                    //printf("hello\n");
+                    src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
+                    src2_data = m_thread[tid]->get_operand_value(src2, dst, i_type, m_thread[tid], 1);
+                    src3_data = m_thread[tid]->get_operand_value(src3, dst, i_type, m_thread[tid], 1);
+                    oow.arr[t].addValues(src1_data,src2_data,src3_data,op);
+                }
+
+
             }
 
             /*

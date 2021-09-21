@@ -15,7 +15,7 @@ public:
     }
 
     
-    void addValues(ptx_reg_t s1,ptx_reg_t s2,ptx_reg_t s3,ptx_reg_t d,int op){
+    void addValues(ptx_reg_t s1,ptx_reg_t s2,ptx_reg_t s3,int op){
         src1=s1;
         src2=s2;
         src3=s3;
@@ -36,7 +36,7 @@ class opc_opr_warp{
 
 public:
     void add_opc_opr(ptx_reg_t s1, ptx_reg_t s2, ptx_reg_t s3, ptx_reg_t d, int op, int tid){
-        arr[tid].addValues(s1,s2,s3,d,op);
+        arr[tid].addValues(s1,s2,s3,op);
     }
 
     opc_opr_thread* get_opc_opr_warp(){ //need to think again
@@ -50,7 +50,6 @@ public:
         return true;
     }
 
-private:
     opc_opr_thread arr[32]; 
 
 };
