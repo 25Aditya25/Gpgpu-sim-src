@@ -792,9 +792,19 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 {   
     /*Added by Aditya*/
     addr_t pc=inst.pc; //get pc from timing model
+    const ptx_instruction *pI; //ptx Instruction
+    function_info* fI; //function infor needed to fetch instruction
+    int op; //opcode
+    unsigned num_op;
+    /*const operand_info &dst;//get operand info of sources and destination 
+    const operand_info &src1; //use them to determine that they are of type 'register'
+    const operand_info &src2;
+    const operand_info &src3;*/
+    unsigned i_type; 
+    ptx_reg_t src1_data, src2_data, src3_data;
     //printf("Aditya PC Value is: %u\n",pc);
     /*End of Added by Aditya*/
-    
+
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
             if(warpId==(unsigned (-1)))
@@ -825,13 +835,53 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             call some function that gets the operands
             To get operands we need to do the following
             1. get pc from inst
-            2. get instruction
+            2. fetch instruction
             3. get operands
             
             check if the operands and opcode are already present in a queue of 512 elements
             if they are present then increment the count of repetetaions and deque the last element from the queue,
             enque the read operands and opcode.
             */
+
+            /*Added by Aditya*/
+            if(t==0){
+                fI=m_thread[tid]->func_info(); 
+                pI=fI->get_instruction(pc);
+                op=pI->get_opcode();
+                num_op=pI->get_num_operands();
+                //printf("\nInstruction opcode is:%d\n",pI->get_opcode());
+            } 
+            //Reading operands
+            //printf("\n #Aditya# num_op: %u",num_op);
+
+            if(pI->m_operands_status() && num_op==2){
+                const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
+                const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
+                i_type = pI->get_type();
+                //printf("hello\n");
+                src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
+            }
+
+            /*
+            const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
+            const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
+            const operand_info &src2 = pI->src2();
+            const operand_info &src3 = pI->src3();
+
+            i_type = pI->get_type();
+            src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
+            src2_data = m_thread[tid]->get_operand_value(src2, dst, i_type, m_thread[tid], 1);
+            src3_data = m_thread[tid]->get_operand_value(src3, dst, i_type, m_thread[tid], 1);
+
+
+            
+            */    
+            printf("\n #Aditya# U64_TYPE: %lu",src1_data.u64);     
+                  
+
+               
+
+            /*End of Added by Aditya*/
 
 
 

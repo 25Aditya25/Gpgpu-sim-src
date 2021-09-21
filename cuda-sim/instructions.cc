@@ -762,13 +762,16 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    const operand_info &src2 = pI->src2();
 
    
+   
    unsigned i_type = pI->get_type();
    src1_data = thread->get_operand_value(src1, dst, i_type, thread, 1);
    src2_data = thread->get_operand_value(src2, dst, i_type, thread, 1);
    
    //Added by aditya
    
-   switch(i_type){
+   //printf("Number of operands is: %u",pI->get_num_operands());
+   
+   /*switch(i_type){
       case S8_TYPE:printf("\n #Aditya# S8_TYPE: %d",src1_data.s8);
       case S16_TYPE:printf("\n #Aditya# S16_TYPE: %d",src1_data.s16);
       case S32_TYPE:printf("\n #Aditya# S32_TYPE: %d",src1_data.s32);
@@ -789,7 +792,7 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
       default: printf("\n #Aditya# 32bitsigned %d",src1_data.s32);
 
    }
-
+*/
    
   
   

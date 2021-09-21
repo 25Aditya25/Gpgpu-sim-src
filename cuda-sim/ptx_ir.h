@@ -915,6 +915,13 @@ public:
       return m_operands[0];
    }
 
+   /*Added by Aditya*/
+   const bool m_operands_status()const
+   {
+      return !m_operands.empty();
+   }
+   /*End of Added by Aditya*/
+
    const operand_info &src1() const 
    { 
       assert( m_operands.size() > 1 );

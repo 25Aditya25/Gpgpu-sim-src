@@ -3,6 +3,10 @@ Every thing in this header file is added by Aditya
 */
 
 #include "ptx_sim.h"
+#include <deque>
+using namespace std;
+
+#define maxoowqSize 512
 
 class opc_opr_thread{
 public:
@@ -15,16 +19,16 @@ public:
         src1=s1;
         src2=s2;
         src3=s3;
-        dest=d;
+        //dest=d;
         opcode=op;
     }
 
     bool isooEqual(opc_opr_thread o){
-        return ((opcode==o.opcode) && src1.isEqual(o.src1) && src2.isEqual(o.src2) && src3.isEqual(o.src3) && dest.isEqual(o.dest));
+        return ((opcode==o.opcode) && src1.isEqual(o.src1) && src2.isEqual(o.src2) && src3.isEqual(o.src3) /*&& dest.isEqual(o.dest)*/);
     }
 
  private:    
-    ptx_reg_t src1,src2,src3,dest;
+    ptx_reg_t src1,src2,src3;//,dest;
     int opcode;   
 };
 
@@ -48,5 +52,36 @@ public:
 
 private:
     opc_opr_thread arr[32]; 
+
+};
+
+class opc_opr_warp_queue{
+private:
+    deque<opc_opr_warp> oowq;
+    int i,found;
+
+public:
+    bool inqueue(opc_opr_warp o){
+        if(oowq.size()==0) return false;
+        else{
+            found=0;
+            for(i=0;i<oowq.size();i++){
+                if(o.isoowEqual(oowq[i]))found=1;
+            }
+            if(found) return true;
+            else return false;
+        }
+    }
+
+    void insert(opc_opr_warp o){
+        if(oowq.size()<maxoowqSize){
+            oowq.push_back(o);
+        }
+        else{
+            oowq.pop_front();
+            oowq.push_back(o);
+        }
+    }
+
 
 };
