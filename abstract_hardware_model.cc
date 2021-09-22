@@ -37,6 +37,7 @@
 #include <algorithm>
 
 /*Added by Aditya*/
+//#include "gpgpu-sim/shader.cc"
 #include "cuda-sim/profile.h"
 /*End of Added by Aditya*/
 unsigned mem_access_t::sm_next_access_uid = 0;   
@@ -650,6 +651,13 @@ void simt_stack::print (FILE *fout) const
     }
 }
 
+
+/*Added by Aditya*/
+opc_opr_warp_queue oowQueue;
+CountRepInst cri;   //counts repeated instructions
+/*End of Added by Aditya*/
+
+
 void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, address_type recvg_pc, op_type next_inst_op,unsigned next_inst_size, address_type next_inst_pc )
 {
     assert(m_stack.size() > 0);
@@ -806,7 +814,10 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
     opc_opr_warp oow;    //for storing operands and opcode for each thread of a warp
     ptx_reg_t zero;     //for storing zero operands
 
-
+    /*Added by Aditya*/
+    
+    /*End of Added by Aditya*/
+    
     //printf("Aditya PC Value is: %u\n",pc);
     
     for ( unsigned t=0; t < m_warp_size; t++ ) {
@@ -897,8 +908,8 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 
 
             }
-
-            /*
+            
+            
             const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
             const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
             const operand_info &src2 = pI->src2();
@@ -911,8 +922,8 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 
 
             
-            */    
-            printf("\n #Aditya# U64_TYPE: %lu",src1_data.u64);     
+            
+            //printf("\n #Aditya# U64_TYPE: %lu",src1_data.u64);     
                   
 
                
@@ -929,6 +940,20 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             checkExecutionStatusAndUpdate(inst,t,tid);
         }
     } 
+
+    /*Added by Aditya*/
+    //first check if the oowQueue is present in the queue
+    //if in the queue then increment a variable
+    //insert the oow in the queue
+    
+    if(oowQueue.inqueue(oow)){
+        cri.inc_Count();
+    }
+
+    oowQueue.insert(oow);
+    
+
+    /*End of Added by Aditya*/
 }
   
 bool  core_t::ptx_thread_done( unsigned hw_thread_id ) const  

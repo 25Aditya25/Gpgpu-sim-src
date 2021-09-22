@@ -70,6 +70,22 @@
 
 #define WRITE_MASK_SIZE 8
 
+/*Edited by Aditya*/
+class CountRepInst{
+public:
+     unsigned m_numberOf_repEx;
+    //static unsigned m_numberOf_repEx;
+
+    void inc_Count(){
+        m_numberOf_repEx++;
+    }
+
+    unsigned getValue(){
+        return m_numberOf_repEx;
+    }
+    
+};
+/*End of Edited by Aditya*/
 
 class thread_ctx_t {
 public:
@@ -1397,14 +1413,7 @@ struct shader_core_stats_pod {
     unsigned *num_warps_issuable;
     unsigned gpgpu_n_stall_shd_mem;
 
-    /*
-    Added by Aditya
-    */
-    unsigned *m_num_repEx;
-
-     /*
-    End of Added by Aditya
-    */   
+   
 
     //memory access classification
     int gpgpu_n_mem_read_local;
@@ -1501,17 +1510,7 @@ public:
         m_shader_dynamic_warp_issue_distro.resize( config->num_shader() );
         m_shader_warp_slot_issue_distro.resize( config->num_shader() );
 
-        /*
-        Edited by Aditya
-        */
-        m_num_repEx = (unsigned*) calloc(config->num_shader(),sizeof(unsigned));
-
-        //Data structure to store the instruction and their operand values
-
-
-
-
-
+        
 
     }
 
@@ -1559,6 +1558,11 @@ private:
     std::vector< std::vector<unsigned> > m_shader_warp_slot_issue_distro;
     std::vector<unsigned> m_last_shader_warp_slot_issue_distro;
 
+    /*Edited by Aditya*/
+    CountRepInst repstats;
+    /*End of Edited by Aditya*/
+    
+    
     friend class power_stat_t;
     friend class shader_core_ctx;
     friend class ldst_unit;

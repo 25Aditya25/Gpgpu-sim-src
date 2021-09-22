@@ -158,6 +158,10 @@ enum _memory_op_t {
 #include <map>
 #include <deque>
 
+/*Added by Aditya*/
+//#include "cuda-sim/profile.h"  
+/*End of Added by Aditya*/
+
 #if !defined(__VECTOR_TYPES_H__)
 struct dim3 {
    unsigned int x, y, z;
@@ -1081,6 +1085,11 @@ class core_t {
             }
 
         }
+
+        /*Added by Aditya*/
+        //opc_opr_warp_queue oowQueue;
+        /*End of Added by Aditya*/
+
         virtual ~core_t() { free(m_thread); }
         virtual void warp_exit( unsigned warp_id ) = 0;
         virtual bool warp_waiting_at_barrier( unsigned warp_id ) const = 0;
@@ -1107,6 +1116,9 @@ class core_t {
         unsigned m_warp_size;
         unsigned m_warp_count;
         unsigned reduction_storage[MAX_CTA_PER_SHADER][MAX_BARRIERS_PER_CTA];
+
+
+
 };
 
 

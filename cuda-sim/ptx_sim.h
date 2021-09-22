@@ -29,7 +29,10 @@
 
 #include <stdlib.h>
 
-#include "../abstract_hardware_model.h"
+
+#include "../abstract_hardware_model.h" //necessary
+
+
 #include "../tr1_hash_map.h" 
 
 #include <assert.h>
