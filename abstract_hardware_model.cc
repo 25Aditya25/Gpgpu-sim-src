@@ -38,7 +38,7 @@
 
 /*Added by Aditya*/
 //#include "gpgpu-sim/shader.cc"
-#include "cuda-sim/profile.h"
+#include "profile.h"
 /*End of Added by Aditya*/
 unsigned mem_access_t::sm_next_access_uid = 0;   
 unsigned warp_inst_t::sm_next_uid = 0;
@@ -652,10 +652,7 @@ void simt_stack::print (FILE *fout) const
 }
 
 
-/*Added by Aditya*/
-opc_opr_warp_queue oowQueue;
-CountRepInst cri;   //counts repeated instructions
-/*End of Added by Aditya*/
+
 
 
 void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, address_type recvg_pc, op_type next_inst_op,unsigned next_inst_size, address_type next_inst_pc )
@@ -909,7 +906,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 
             }
             
-            
+            /*
             const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
             const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
             const operand_info &src2 = pI->src2();
@@ -919,7 +916,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
             src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
             src2_data = m_thread[tid]->get_operand_value(src2, dst, i_type, m_thread[tid], 1);
             src3_data = m_thread[tid]->get_operand_value(src3, dst, i_type, m_thread[tid], 1);
-
+            */
 
             
             
@@ -933,7 +930,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 
 
             m_thread[tid]->ptx_exec_inst(inst,t);  //m_thread is of type ptx_thread_info
-            printf("\nAditya Warp ID =%u Thread id=%u ",warpId,t);
+            if(t==0)printf("\nAditya Warp ID =%u Thread id=%u ",warpId,t);
 
 
             //virtual function
@@ -945,11 +942,12 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
     //first check if the oowQueue is present in the queue
     //if in the queue then increment a variable
     //insert the oow in the queue
-    
+    m_repstats.num_inst++;
     if(oowQueue.inqueue(oow)){
-        cri.inc_Count();
+        m_repstats.inc_Count();
+        printf("Dinesh repeated Instructions= %u out of %u \n", m_repstats.m_numberOf_repEx,m_repstats.num_inst);
     }
-
+    
     oowQueue.insert(oow);
     
 

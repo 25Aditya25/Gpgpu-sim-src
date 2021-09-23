@@ -159,8 +159,44 @@ enum _memory_op_t {
 #include <deque>
 
 /*Added by Aditya*/
-//#include "cuda-sim/profile.h"  
+#include "profile.h"
+
+//class opc_opr_thread;
+//class opc_opr_warp;
+//class opc_opr_warp_queue;
+
 /*End of Added by Aditya*/
+
+/*Edited by Aditya*/
+//#include "cuda-sim/ptx_sim.h"
+
+class CountRepInst{
+public:
+    unsigned m_numberOf_repEx;
+    unsigned num_inst;
+    //static unsigned m_numberOf_repEx;
+
+    void inc_Count(){
+        m_numberOf_repEx++;
+    }
+
+    unsigned getValue(){
+        return m_numberOf_repEx;
+    }
+    CountRepInst(){
+        m_numberOf_repEx=0;
+        num_inst=0;
+    }
+};
+
+//CountRepInst m_repstats;
+
+
+/*End of Edited by Aditya*/
+
+
+
+
 
 #if !defined(__VECTOR_TYPES_H__)
 struct dim3 {
@@ -1117,7 +1153,13 @@ class core_t {
         unsigned m_warp_count;
         unsigned reduction_storage[MAX_CTA_PER_SHADER][MAX_BARRIERS_PER_CTA];
 
-
+        /*Added by Aditya*/
+    
+        opc_opr_warp_queue oowQueue;
+        CountRepInst m_repstats;
+    
+    
+    /*End of Added by Aditya*/
 
 };
 

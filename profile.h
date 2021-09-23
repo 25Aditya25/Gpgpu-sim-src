@@ -4,9 +4,14 @@ Every thing in this header file is added by Aditya
 #ifndef profile_H_INCLUDED
 #define profile_H_INCLUDED
 
-#include "ptx_sim.h" //absolutely needed
+//#include "cuda-sim/ptx_sim.h" //absolutely needed
 #include <deque>
 //using namespace std;
+/*Added by Aditya*/
+#include "cuda-sim/ptx_reg.h"
+/*End of Added by Aditya*/
+
+
 
 #define maxoowqSize 512
 
@@ -44,9 +49,9 @@ public:
         arr[tid].addValues(s1,s2,s3,op);
     }*/
 
-    /*opc_opr_thread* get_opc_opr_warp(){ //need to think again
+    opc_opr_thread* get_opc_opr_warp(){ //need to think again
         return arr;
-    } */
+    } 
 
     bool isoowEqual(opc_opr_warp o);
     /*{
@@ -92,4 +97,6 @@ public:
 
 
 };
+
+
 #endif

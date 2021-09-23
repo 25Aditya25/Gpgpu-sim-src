@@ -387,7 +387,7 @@ void shader_core_stats::print( FILE* fout ) const
     fprintf(fout,"gpgpu_n_mem_texture = %d\n", gpgpu_n_mem_texture);
     fprintf(fout,"gpgpu_n_mem_const = %d\n", gpgpu_n_mem_const);
     /*Added by Aditya*/
-    fprintf(fout,"Dinesh repeated Instructions= %u\n", repstats.m_numberOf_repEx);
+    //fprintf(fout,"Dinesh repeated Instructions= %u\n", m_repstats.m_numberOf_repEx);
     /*End of Added by Aditya*/
 
     /*

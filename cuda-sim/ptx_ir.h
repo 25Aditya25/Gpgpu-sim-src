@@ -43,6 +43,11 @@
 
 #include "memory.h"
 
+/*Added by Aditya*/
+#include "ptx_reg.h"
+/*End of Added by Aditya*/
+
+
 class type_info_key {
 public:
    type_info_key()

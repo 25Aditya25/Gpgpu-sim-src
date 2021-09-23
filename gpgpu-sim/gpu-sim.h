@@ -72,7 +72,6 @@ enum dram_ctrl_t {
 };
 
 
-
 struct power_config {
 	power_config()
 	{

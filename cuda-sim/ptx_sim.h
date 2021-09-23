@@ -56,6 +56,11 @@ struct param_t {
 
 #include "memory.h"
 
+/*Added by Aditya*/
+#include "ptx_reg.h"
+/*End of Added by Aditya*/
+
+/*
 union ptx_reg_t {
    ptx_reg_t() {
       bits.ms = 0;
@@ -121,11 +126,11 @@ union ptx_reg_t {
          return(bits.ms >> (bit-32)) & 1;
    }
 
-   /*Added by Aditya*/
+   /*Added by Aditya
    bool isEqual(ptx_reg_t o){
       return (o.u128.lowest==u128.lowest && o.u128.highest==u128.highest && o.u128.low==u128.low && o.u128.high==u128.high);
    }
-   /*End of Added by Aditya*/
+   /*End of Added by Aditya
 
 
    signed char       s8;
@@ -152,7 +157,7 @@ union ptx_reg_t {
    unsigned       pred : 4;
 
 };
-
+*/
 class ptx_instruction;
 class operand_info;
 class symbol_table;
