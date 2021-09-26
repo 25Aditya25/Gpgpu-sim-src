@@ -1119,6 +1119,9 @@ class core_t {
             		reduction_storage[i][j]=0;
             	}
             }
+            /*Added by Aditya*/
+            previous_shader=0;
+            /*End of Added by Aditya*/
 
         }
 
@@ -1154,7 +1157,8 @@ class core_t {
         unsigned reduction_storage[MAX_CTA_PER_SHADER][MAX_BARRIERS_PER_CTA];
 
         /*Added by Aditya*/
-    
+        unsigned m_shader_id;
+        static unsigned previous_shader;
         opc_opr_warp_queue oowQueue;
         CountRepInst m_repstats;
     

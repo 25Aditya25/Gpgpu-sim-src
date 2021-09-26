@@ -8,6 +8,7 @@ Every thing in this header file is added by Aditya
 #include <deque>
 //using namespace std;
 /*Added by Aditya*/
+
 #include "cuda-sim/ptx_reg.h"
 /*End of Added by Aditya*/
 

@@ -1737,6 +1737,9 @@ void gpgpu_cuda_ptx_sim_main_func( kernel_info_t &kernel, bool openCL )
 
      //using a shader core object for book keeping, it is not needed but as most function built for performance simulation need it we use it here
     extern gpgpu_sim *g_the_gpu;
+    //Added by Aditya
+    unsigned shader_count=0;
+    //End of Added by Aditya
 
     //we excute the kernel one CTA (Block) at the time, as synchronization functions work block wise
     while(!kernel.no_more_ctas_to_run()){
@@ -1745,7 +1748,11 @@ void gpgpu_cuda_ptx_sim_main_func( kernel_info_t &kernel, bool openCL )
             g_the_gpu,
             g_the_gpu->getShaderCoreConfig()->warp_size
         );
+        //Added by Aditya
+        printf("Aditya Shader_count=%d\n",shader_count++);
+        //End of Added by Aditya
         cta.execute();
+
     }
     
    //registering this kernel as done      
@@ -1843,7 +1850,11 @@ void functionalCoreSim::executeWarp(unsigned i, bool &allAtBarrier, bool & someO
 {
     if(!m_warpAtBarrier[i] && m_liveThreadCount[i]!=0){
         warp_inst_t inst =getExecuteWarp(i);
-        execute_warp_inst_t(inst,i);
+        execute_warp_inst_t(inst,i);  //This is not getting called
+      //Added ny Aditya
+        printf("Aditya execute_warp_inst_t being called\n");
+      //End of Added by Aditya
+
         if(inst.isatomic()) inst.do_atomic(true);
         if(inst.op==BARRIER_OP || inst.op==MEMORY_BARRIER_OP ) m_warpAtBarrier[i]=true;
         updateSIMTStack( i, &inst );

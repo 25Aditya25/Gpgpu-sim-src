@@ -557,6 +557,10 @@ void warp_inst_t::completed( unsigned long long cycle ) const
 
 unsigned kernel_info_t::m_next_uid = 1;
 
+//Added by Aditya
+unsigned core_t::previous_shader=0;
+//End of Added by Aditya
+
 kernel_info_t::kernel_info_t( dim3 gridDim, dim3 blockDim, class function_info *entry )
 {
     m_kernel_entry=entry;
@@ -945,8 +949,11 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
     m_repstats.num_inst++;
     if(oowQueue.inqueue(oow)){
         m_repstats.inc_Count();
-        printf("Dinesh repeated Instructions= %u out of %u \n", m_repstats.m_numberOf_repEx,m_repstats.num_inst);
+        if(m_repstats.m_numberOf_repEx==1) m_shader_id=previous_shader++;
+        
     }
+    printf("Dinesh shader_id =%d repeated Instructions= %u out of %u \n",m_shader_id, m_repstats.m_numberOf_repEx,m_repstats.num_inst);
+    
     
     oowQueue.insert(oow);
     
