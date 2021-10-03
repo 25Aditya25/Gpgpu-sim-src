@@ -801,7 +801,9 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    
 
    //std::cout<<"hello="<<std::endl;
-  
+  /*printf("Aditya S8_TYPE=%d S16_TYPE=%d S32_TYPE=%d S64_TYPE=%d U8_TYPE=%d U16_TYPE=%d U32_TYPE=%d U64_TYPE=%d F16_TYPE=%d F32_TYPE=%d F64_TYPE=%d FF64_TYPE=%d\n\n"
+   ,S8_TYPE,S16_TYPE,S32_TYPE,S64_TYPE,U8_TYPE,U16_TYPE,U32_TYPE,U64_TYPE,F16_TYPE,F32_TYPE,F64_TYPE,FF64_TYPE);
+   */
    //End of Added by aditya
 
    unsigned rounding_mode = pI->rounding_mode();
@@ -811,6 +813,8 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    case RZ_OPTION: fesetround( FE_TOWARDZERO ); break;
    default: assert(0); break;
    }
+
+
 
    //performs addition. Sets carry and overflow if needed.
    switch ( i_type ) {
@@ -848,10 +852,19 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
       data.u64 = src1_data.u64 + src2_data.u64;
       break;
    case F16_TYPE: assert(0); break;
-   case F32_TYPE: data.f32 = src1_data.f32 + src2_data.f32; break;
+   case F32_TYPE: {
+      data.f32 = src1_data.f32 + src2_data.f32; 
+      //Added by Aditya
+      //printf("Aditya i_type=%d\n",i_type);
+      //End of Added by Aditya
+      break;
+      }
    case F64_TYPE: case FF64_TYPE: data.f64 = src1_data.f64 + src2_data.f64; break;
    default: assert(0); break;
    }
+
+
+
    fesetround( orig_rm );
 
    thread->set_operand_value(dst, data, i_type, thread, pI, overflow, carry  );

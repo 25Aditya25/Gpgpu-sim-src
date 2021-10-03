@@ -1563,7 +1563,7 @@ public:
     {
     	m_core_id = core_id;
         //Edited by Aditya
-        printf("Winnie start core id is %u\n\n", core_id);//prints only in the begining 
+        //printf("Winnie start core id is %u\n\n", core_id);//prints only in the begining 
         //End of Edited by Aditya
     	m_cluster_id = cluster_id;
     	m_memory_config = config;
@@ -1638,7 +1638,7 @@ public:
     kernel_info_t *get_kernel() { return m_kernel; }
     unsigned get_sid() const {
         /*Added by Aditya*/
-        printf("\nWinnie core id is %u and at %llu \n", m_sid,m_last_inst_gpu_sim_cycle+m_last_inst_gpu_tot_sim_cycle);
+        //printf("\nWinnie core id is %u and at %llu \n", m_sid,m_last_inst_gpu_sim_cycle+m_last_inst_gpu_tot_sim_cycle);
         /*End of Added by Aditya*/
         return m_sid;}
    

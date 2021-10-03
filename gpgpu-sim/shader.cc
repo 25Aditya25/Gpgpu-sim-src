@@ -722,7 +722,7 @@ void shader_core_ctx::fetch()
 
 void shader_core_ctx::func_exec_inst( warp_inst_t &inst )
 {
-    execute_warp_inst_t(inst);
+    execute_warp_inst_t(inst); //2nd argument takes default value of unsigned (-1)
     if( inst.is_load() || inst.is_store() )
         inst.generate_mem_accesses();
 }

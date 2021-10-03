@@ -39,9 +39,22 @@
 /*Added by Aditya*/
 //#include "gpgpu-sim/shader.cc"
 #include "profile.h"
+//#include "cuda-sim/ptx.y"
 /*End of Added by Aditya*/
 unsigned mem_access_t::sm_next_access_uid = 0;   
 unsigned warp_inst_t::sm_next_uid = 0;
+/*Added by Aditya*/
+unsigned CountRepInst::m_numberOfglobal_RepEx=0;
+unsigned CountRepInst::m_globalnumInst=0;
+unsigned CountRepInst::m_worthyglobalnumInst=0;
+//unsigned CountRepInst::m_numFloatInst=0;
+//unsigned CountRepInst::m_numIntInst=0;
+unsigned CountRepInst::m_numALUiInst=0;
+unsigned CountRepInst::m_numALUfInst=0;
+unsigned CountRepInst::m_numSFUInst=0;
+
+
+/*End of Added by Aditya*/
 
 void move_warp( warp_inst_t *&dst, warp_inst_t *&src )
 {
@@ -814,16 +827,16 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
     int areAllactive=1;  //put the operands into queue only when this is set.
     opc_opr_warp oow;    //for storing operands and opcode for each thread of a warp
     ptx_reg_t zero;     //for storing zero operands
+    int increment;
+    int src1_shader5,src2_shader5;
+    
 
-    /*Added by Aditya*/
-    
-    /*End of Added by Aditya*/
-    
     //printf("Aditya PC Value is: %u\n",pc);
     
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( !inst.active(t) ) areAllactive=0;
     }
+    increment=0;
     /*End of Added by Aditya*/
     for ( unsigned t=0; t < m_warp_size; t++ ) {
         if( inst.active(t) ) {
@@ -869,6 +882,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
                 pI=fI->get_instruction(pc);
                 op=pI->get_opcode();
                 num_op=pI->get_num_operands();
+                
                 //printf("\nInstruction opcode is:%d\n",pI->get_opcode());
             } 
             //Reading operands
@@ -881,6 +895,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
                     //printf("hello\n");
                     src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
                     oow.arr[t].addValues(src1_data,zero,zero,op);
+                    increment=1;
                 }
                 else if(pI->m_operands_status() && num_op==3){
                     const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
@@ -892,6 +907,11 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
                     src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
                     src2_data = m_thread[tid]->get_operand_value(src2, dst, i_type, m_thread[tid], 1);
                     oow.arr[t].addValues(src1_data,src2_data,zero,op);
+                    increment=1;
+                    //src1_shader5=src1_data.s32;
+                    //src2_shader5=src2_data.s32;
+                    //printf("Hello\n");
+                    //printf("Aditya warpid=%u tid=%u opcode=%d src1_data=%d, src2_data=%d\n",warpId,t,op,src1_data.s32,src2_data.s32);
                 }
                 else if(pI->m_operands_status() && num_op==4){
                     const operand_info &dst  = pI->dst();  //get operand info of sources and destination 
@@ -904,8 +924,12 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
                     src1_data = m_thread[tid]->get_operand_value(src1, dst, i_type, m_thread[tid], 1);
                     src2_data = m_thread[tid]->get_operand_value(src2, dst, i_type, m_thread[tid], 1);
                     src3_data = m_thread[tid]->get_operand_value(src3, dst, i_type, m_thread[tid], 1);
+                    //src1_shader5=src1_data.s32;
+                    //src2_shader5=src2_data.s32;
                     oow.arr[t].addValues(src1_data,src2_data,src3_data,op);
+                    increment=1;
                 }
+                else increment=0;
 
 
             }
@@ -934,7 +958,7 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
 
 
             m_thread[tid]->ptx_exec_inst(inst,t);  //m_thread is of type ptx_thread_info
-            if(t==0)printf("\nAditya Warp ID =%u Thread id=%u ",warpId,t);
+            //if(t==0)printf("\nAditya Warp ID =%u Thread id=%u ",warpId,t);
 
 
             //virtual function
@@ -946,17 +970,51 @@ void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId)
     //first check if the oowQueue is present in the queue
     //if in the queue then increment a variable
     //insert the oow in the queue
+
+    /*
+    code to check if Floating point or Integer goes here
+    */
+
     m_repstats.num_inst++;
-    if(oowQueue.inqueue(oow)){
-        m_repstats.inc_Count();
-        if(m_repstats.m_numberOf_repEx==1) m_shader_id=previous_shader++;
-        
+    m_repstats.m_globalnumInst++;
+
+    //Finding the type of instruction
+    if(isALUiType(i_type,op))m_repstats.m_numALUiInst++;
+    else if(isALUfType(i_type,op))m_repstats.m_numALUfInst++;
+    else m_repstats.m_numSFUInst++;
+
+
+    if(isRepWorthy(op)){
+        m_repstats.num_RepWorthyInstruction++;
+        m_repstats.m_worthyglobalnumInst++;
     }
-    printf("Dinesh shader_id =%d repeated Instructions= %u out of %u \n",m_shader_id, m_repstats.m_numberOf_repEx,m_repstats.num_inst);
+    if(oowQueue.inqueue(oow)){
+        if(increment==1 && isRepWorthy(op)){
+            m_repstats.inc_Count();
+            //printf("Aditya opcode=%d src1_shader5=%d, src2_shader5=%d\n",op,src1_shader5,src2_shader5);
+            if(m_repstats.m_numberOf_repEx==1) m_shader_id=previous_shader++; //New shader has arrived Not actual Name of shader            
+        }                
+    }
+
+
     
-    
+    /*
+    Legend
+    s: Shader Number
+    rI: repeated Warp Instructions
+    trI: Total Repeated Instructions
+    wI: Number of Worthy Warp Instructions
+    tI: total Instructions per sm
+    tgI: total Global Instructions
+    twgI: total Worthy Global Instructions 
+    */
+
+    //if(op==1 && i_type==307) m_repstats.numAddInst++;   //307 is for floating point type
+    if(isLastInst(op))printf("#*#* s=%d rI=%u trI=%u wI=%u tI=%u twgI=%u tgI=%u  op =%d\n",
+        m_shader_id, m_repstats.m_numberOf_repEx,m_repstats.m_numberOfglobal_RepEx,m_repstats.num_RepWorthyInstruction,m_repstats.num_inst,m_repstats.m_worthyglobalnumInst,m_repstats.m_globalnumInst,op);
+    //Prints only for last instruction of a warp   
+
     oowQueue.insert(oow);
-    
 
     /*End of Added by Aditya*/
 }

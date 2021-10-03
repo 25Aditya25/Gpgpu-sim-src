@@ -173,11 +173,16 @@ enum _memory_op_t {
 class CountRepInst{
 public:
     unsigned m_numberOf_repEx;
-    unsigned num_inst;
+    unsigned num_inst,num_RepWorthyInstruction;
     //static unsigned m_numberOf_repEx;
-
+    static unsigned m_numberOfglobal_RepEx; //number of repeated warp instructions in all SMs
+    static unsigned m_globalnumInst,m_worthyglobalnumInst; //number of total warp instructions, total worthy instructions
+    //static unsigned m_numFloatInst,m_numIntInst;
+    static unsigned m_numALUiInst,m_numALUfInst,m_numSFUInst;
+    int numAddInst;
     void inc_Count(){
         m_numberOf_repEx++;
+        m_numberOfglobal_RepEx++;
     }
 
     unsigned getValue(){
@@ -186,6 +191,8 @@ public:
     CountRepInst(){
         m_numberOf_repEx=0;
         num_inst=0;
+        numAddInst=0;
+        num_RepWorthyInstruction=0;
     }
 };
 
